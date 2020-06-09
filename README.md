@@ -53,13 +53,13 @@ fi
 
 exit 0
 ```
-Simply add the following line: `python /home/pi/Documents/Pi_IP_Mailer.py` above the `printf`
+Simply add the following line: `python3 /home/pi/Documents/Pi_IP_Mailer.py` above the `printf`
 line (Remembering to change the path to match where you saved your script) and save the file. The file
 should now look like this:
 ```bash
 _IP=$(hostname -I) || true
 if [ "$_IP" ]; then
-  python /home/pi/Documents/Pi_IP_Mailer.py
+  python3 /home/pi/Documents/Pi_IP_Mailer.py
   printf "My IP address is %s\n" "$_IP"
 fi
 
@@ -67,7 +67,7 @@ exit 0
 ```
 
 If you want to test this, `sudo reboot` your Pi and you should get an Email. If you don't, check that you
-entered your gmail details by simply running the script with `python Pi_IP_Mailer.py`. If you still don't
+entered your gmail details by simply running the script with `python3 Pi_IP_Mailer.py`. If you still don't
 get an Email, and you checked your spam folders, there is a problem with your Gmail details or account.
 
 #### Task Scheduling
@@ -75,13 +75,13 @@ The easiest way to schedule tasks on a Raspberry Pi is to use `cron`. Simply typ
 terminal. I chose to run this script every half an hour, so to do this add the following line to the bottom
 of the file:
 ```
-*/30 * * * * python /home/pi/Documents/Pi_IP_Mailer/Pi_IP_Mailer.py
+*/30 * * * * python3 /home/pi/Documents/Pi_IP_Mailer/Pi_IP_Mailer.py
 ```
 Remember to change the path to match that of your script. If you wanted the script to run every 5 minutes
 you would change `*/30` to `*/5`. If you wanted the script to run every hour the line would instead look like
 this:
 ```
-* */1 * * * python /home/pi/Documents/Pi_IP_Mailer/Pi_IP_Mailer.py
+* */1 * * * python3 /home/pi/Documents/Pi_IP_Mailer/Pi_IP_Mailer.py
 ```
 I aim with these examples to provide quick and easy setup of the script, not a full tutorial in how to use cron.
 The man pages are very helpful if you would like to learn more and can be found by typing `man crontab`.
@@ -89,3 +89,4 @@ The man pages are very helpful if you would like to learn more and can be found 
 ## Other References
 If this isn't quite what you were looking for, try looking at some of these instead:
 * [MathWorks' Tutorial to send an email when an IP address changes using ssmtp](https://uk.mathworks.com/help/supportpkg/raspberrypi/ug/configure-raspberry-pi-hardware-to-email-ip-address-changes.html "MathWorks")
+* [My Pi_IP_Request_Mailer repository to monitor a Gmail inbox and look for requests with a specific subject, and reply to these with all current local IP addresses](https://github.com/NathanielJS1541/Pi_IP_Request_Mailer "Pi_IP_Request_Mailer")
