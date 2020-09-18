@@ -12,21 +12,29 @@ sudo chmod +X Pi_IP_Mailer.py
 Then use cron to schedule this to run regularly (this example will run the task every hour on the hour):
 Type into the terminal "cron -e".
 Then add this line at the bottom of your cron file, remembering to edit the path correctly:
-00 * * * * python /home/pi/Documents/Pi_IP_Mailer.py
+00 * * * * /usr/bin/python3 /home/pi/Documents/Pi_IP_Mailer.py
 
 It is also recommended to run this at startup (and it will always email you when the Pi powers on in this case,
 as the /tmp/ dir is cleared on a power cycle):
 
 Enter "sudo nano /etc/rc.local" into a terminal.
-Edit the bottom of the file to look like this (remembering to edit the path if required):
+Edit the file to look something like this (remembering to edit the path if required):
 
 _IP=$(hostname -I) || true
 if [ "$_IP" ]; then
-  python /home/pi/Documents/Pi_IP_Mailer.py
+  sleep 20
+  /usr/bin/python3 /home/pi/Documents/Pi_IP_Mailer/Pi_IP_Mailer.py
   printf "My IP address is %s\n" "$_IP"
 fi
 
 exit 0
+
+The sleep 20 is not always needed, but in some instances the network interface may not initialise before the script
+runs, so the script will fail without the delay. Alternatively the if statement may be causing a problem, so removing
+that could help:
+
+sleep 20
+/usr/bin/python3 /home/pi/Documents/Pi_IP_Mailer/Pi_IP_Mailer.py
 
 The program will now work as intended. It is also worth noting that storing passwords in plaintext is BAD. PLEASE
 create a new email address for this program that is not linked to any of your other accounts and has a unique
