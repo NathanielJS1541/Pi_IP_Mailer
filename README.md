@@ -48,21 +48,52 @@ fi
 
 exit 0
 ```
-Simply add the following line: `python3 /home/pi/Documents/Pi_IP_Mailer.py` above the `printf` line (Remembering to
-change the path to match where you saved your script) and save the file. The file should now look like this:
+Simply add the following line: `/usr/bin/python3 /home/pi/Documents/Pi_IP_Mailer.py` above the `printf` line (Remembering to
+change the path to match where you saved your script, and the location of your python installation) and save the file. The
+file should now look like this:
 ```bash
 _IP=$(hostname -I) || true
 if [ "$_IP" ]; then
-  python3 /home/pi/Documents/Pi_IP_Mailer.py
+  /usr/bin/python3 /home/pi/Documents/Pi_IP_Mailer/Pi_IP_Mailer.py
   printf "My IP address is %s\n" "$_IP"
 fi
 
 exit 0
 ```
-
 If you want to test this, `sudo reboot` your Pi and you should get an Email. If you don't, check that you entered your
 Gmail details by simply running the script with `python3 Pi_IP_Mailer.py`. If you still don't get an Email, and you
 checked your spam folders, there is a problem with your Gmail details or account.
+
+##### Troubleshooting rc.local tasks
+It is best practice to always use absolute paths in the rc.local file. If your script is still not seeming to start, try
+running the script in an empty environment by entering `env -i /usr/bin/python3 /home/pi/Documents/Pi_IP_Mailer.py`. If you
+still get no errors from this, try piping errors into a temporary file by changing the rc.local file entry to this:
+`/usr/bin/python3 /home/pi/Documents/Pi_IP_Mailer.py > /tmp/script_debug.txt`.
+
+If there are no errors, it could be that a delay is required as the network interface is not active at the time of the script
+starting. You can either configure your pi to wait for a network at boot, or just add a small delay into your rc.local file:
+```bash
+_IP=$(hostname -I) || true
+if [ "$_IP" ]; then
+  sleep 20
+  /usr/bin/python3 /home/pi/Documents/Pi_IP_Mailer/Pi_IP_Mailer.py
+  printf "My IP address is %s\n" "$_IP"
+fi
+
+exit 0
+```
+Or alternatively try removing your line from the if statement:
+```bash
+_IP=$(hostname -I) || true
+if [ "$_IP" ]; then
+  printf "My IP address is %s\n" "$_IP"
+fi
+
+sleep 20
+/usr/bin/python3 /home/pi/Documents/Pi_IP_Mailer/Pi_IP_Mailer.py
+
+exit 0
+```
 
 #### Task Scheduling
 The easiest way to schedule tasks on a Raspberry Pi is to use `cron`. Simply type `crontab -e` into a terminal. I chose
